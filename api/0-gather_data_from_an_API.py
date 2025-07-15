@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+"""
+getting data by using api
+"""
+
+
 import requests
 import sys
 
