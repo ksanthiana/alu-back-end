@@ -1,38 +1,27 @@
 #!/usr/bin/python3
-"""
-Exports completed tasks of a given employee ID to a CSV file.
-"""
+"""Exports tasks of an employee to a CSV file"""
 
 import csv
 import requests
 import sys
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit("Usage: ./1-export_to_CSV.py <employee_id>")
+    user_id = sys.argv[1]
+    user_url = "https://jsonplaceholder.typicode.com/users/{}".format(user_id)
+    todos_url = "https://jsonplaceholder.typicode.com/todos?userId={}".format(user_id)
 
-    employee_id = sys.argv[1]
+    user_response = requests.get(user_url)
+    todos_response = requests.get(todos_url)
 
-    try:
-        int_id = int(employee_id)
-    except ValueError:
-        sys.exit("ID must be an integer")
+    username = user_response.json().get("username")
+    todos = todos_response.json()
 
-    # Get user info
-    user = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}").json()
-    username = user.get("username")
+    filename = "{}.csv".format(user_id)
 
-    # Get todos
-    todos = requests.get(f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}").json()
-
-    # Write completed tasks only
-    with open(f"{employee_id}.csv", mode="w", newline="") as f:
-        writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+    with open(filename, mode='w', newline='') as csvfile: 
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         for task in todos:
-            if task.get("completed"):
-                writer.writerow([
-                    employee_id,
-                    username,
-                    "True",
-                    task.get("title")
-                ])
+            writer.writerow([user_id,
+                             username,
+                             task.get("completed"),
+                             task.get("title")])
