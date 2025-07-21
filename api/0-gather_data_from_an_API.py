@@ -11,7 +11,7 @@ if __name__ == "__main__":
     employee_Id = int(sys.argv[1])
 
     todo_url = "https://jsonplaceholder.typicode.com/todos"
-    user_data_url = "https://jsonplaceholder.typicode.com/users"
+    user_data_url = "https://jsonplaceholder.typicode.com/users/2"
 
     user_response = requests.get(user_data_url)
     todo_response = requests.get(todo_url)
